@@ -13,7 +13,6 @@ const spawn = require('child_process').spawn;
 function searchSpotify(rartist, rtrack, rgenre) {
     rartist = rartist.toLowerCase();
     rtrack = rtrack.toLowerCase();
-    rartist = rartist.toLowerCase();
     var searchterm = rartist;
     console.log("searching spotify for " + searchterm + " ....");
     var searchtype = "artist,track";
@@ -52,7 +51,6 @@ function searchSpotify(rartist, rtrack, rgenre) {
                                 selectedpopular = result.tracks.items[i].popularity;
                                 selectedprev = result.tracks.items[i].preview_url;
                                 data.push({"artist":selectedartist.name,"track":selectedtrack.name,"popularity":selectedpopular,"preview":selectedprev});
-                                //index++;
                                 break;
                             }
                         }
@@ -71,10 +69,7 @@ function searchSpotify(rartist, rtrack, rgenre) {
             } else {
                 console.log("no song found from spotify");
 		console.log("StatusCode: "+response.statusCode);
-               // setLEDColor("red", 255)
-                setTimeout(function() {
-                   // setLEDColor("white", 255);
-                }, 800);
+                setTimeout(function() {}, 800);
             }
 
         } else {
@@ -85,10 +80,9 @@ function searchSpotify(rartist, rtrack, rgenre) {
 
 
 function searchSpotifyTrack(rartist, rtrack, rgenre) {
-    rartist = rtrack.toLowerCase();
-    rtrack = rtrack.toLowerCase();
     rartist = rartist.toLowerCase();
-    var searchterm = rartist;
+    rtrack = rtrack.toLowerCase();
+    var searchterm = rtrack;
     console.log("searching spotify for " + searchterm + " ....");
     var searchtype = "artist,track";
     var options = {
@@ -111,23 +105,35 @@ function searchSpotifyTrack(rartist, rtrack, rgenre) {
             
             if (result.tracks.items.length > 0) {
                 
+                rtrack = rtrack.replace(/ /g, "");
                 console.log("For ciklus: " + result.tracks.items.length);
                 for (var i = 0; i < result.tracks.items.length; i++){
                     selectedtrack = result.tracks.items[i];
                     var ftrack = selectedtrack.name.toLowerCase();
-                    console.log(selectedtrack.name);
+                    var ftrackarr = [];
+                    if (/-/.test(ftrack)){
+                        ftrackarr = ftrack.split("-");
+                    };
+                    if (/\(/.test(ftrack)){
+                        ftrackarr = ftrack.split("(");
+                    };
+                    if (ftrackarr.length > 0){
+                        ftrack = String(ftrackarr[0]);
+                    };
+                    ftrack = ftrack.replace(/ /g, "");
+                    console.log("Track check: " + selectedtrack.name + ", ftrack: " + ftrack + " =? " + rtrack);
                     if (ftrack === rtrack){
                         for (var j = 0; j < result.tracks.items[i].artists.length; j++){
                             selectedartist = result.tracks.items[i].artists[j];
                             var fartist = selectedartist.name.toLowerCase();
+                            console.log("Artist check: " + selectedartist.name + " " + fartist + " =? " + rartist);
                             if (fartist === rartist){
                                 console.log("Artist: " + selectedartist.name + " Track: " + selectedtrack.name);
-                                console.log("Found : " + ftrack, " by ", fartist, result.tracks.items[i].popularity);
+                                console.log("Found : " + selectedtrack.name, " by ", selectedartist.name + ", " + result.tracks.items[i].popularity);
                                 console.log("selectedtrack.preview_url: "+ result.tracks.items[i].preview_url);
                                 selectedpopular = result.tracks.items[i].popularity;
                                 selectedprev = result.tracks.items[i].preview_url;
                                 data.push({"artist":selectedartist.name,"track":selectedtrack.name,"popularity":selectedpopular,"preview":selectedprev});
-                                //index++;
                                 break;
                             }
                         }
@@ -136,20 +142,23 @@ function searchSpotifyTrack(rartist, rtrack, rgenre) {
                 console.log("For ciklus vége");
                 console.log(data);
                 var choose = 0;
-                for (var i = 1; i < data.length; i++){
-                    if (data[choose].popularity < data[i].popularity){
-                        choose = i;
+                if (data.length > 0) {
+                    for (var i = 1; i < data.length; i++){
+                        if (data[choose].popularity < data[i].popularity){
+                            console.log(data[choose].popularity + " < " + data[i].popularity)
+                            choose = i;
+                        }
                     }
+                    downloadFile(data[choose].preview);
+                } else {
+                    console.log("no song found from spotify");
                 }
-                downloadFile(data[choose].preview);
+                
                 
             } else {
                 console.log("no song found from spotify");
-		console.log("StatusCode: "+response.statusCode);
-               // setLEDColor("red", 255)
-                setTimeout(function() {
-                   // setLEDColor("white", 255);
-                }, 800);
+		console.log("StatusCode: " + response.statusCode);
+                setTimeout(function() {}, 800);
             }
 
         } else {
@@ -189,7 +198,6 @@ function downloadFile(url) {
     donwloadrequest.pipe(file);
     file.on('finish', function() {
         file.close();
-       // dance(destinationfile);
 	console.log("Download of prewiev.mp3 was successful");
 	playsound("preview.mp3");
 
@@ -200,5 +208,5 @@ function downloadFile(url) {
     });
 }
 
-searchSpotify("Tankcsapda", "üdvözöl a pokol", "rock");
-//searchSpotifyTrack("Tankcsapda", "üdvözöl a pokol", "rock");
+//searchSpotify("Tankcsapda", "üdvözöl a pokol", "rock");
+searchSpotifyTrack("michael jackson", "stranger in moscow", "rock");
