@@ -4,8 +4,6 @@
  * and open the template in the editor.
  */
 var Sound = require('node-aplay');
-//var AudioContext = require('web-audio-api').AudioContext
-//context = new AudioContext
 var _ = require('underscore');
 var request = require("request");
 var fs = require('fs');
@@ -18,7 +16,7 @@ function searchSpotify(rartist, rtrack, rgenre) {
     rartist = rartist.toLowerCase();
     var searchterm = rartist;
     console.log("searching spotify for " + searchterm + " ....");
-    var searchtype = "artist,track"
+    var searchtype = "artist,track";
     var options = {
         method: 'GET',
         url: "https://api.spotify.com/v1/search",
@@ -28,19 +26,15 @@ function searchSpotify(rartist, rtrack, rgenre) {
             market: "HU",
             limit: 50
         }
-    }
-    var trackartists = ""
-    //var maxpopularity = 0;
+    };
     var selectedtrack, selectedartist, selectedpopular, selectedprev;
     var data = [];
 
     request(options, function(error, response, body) {
-        if (!error && response.statusCode == 200) {
-            var result = JSON.parse(body)
+        if (!error && response.statusCode === 200) {
+            var result = JSON.parse(body);
             
             if (result.tracks.items.length > 0) {
-                //downloadFile(result.tracks.items[0].preview_url) ; // download preview file
-                //selectedtrack = result.tracks.items[0];
                 
                 console.log("For ciklus: " + result.tracks.items.length);
                 for (var i = 0; i < result.tracks.items.length; i++){
@@ -73,30 +67,10 @@ function searchSpotify(rartist, rtrack, rgenre) {
                     }
                 }
                 downloadFile(data[choose].preview);
-                
-                
-                /*
-                result.tracks.items.forEach(function(track) {
-
-                    selectedtrack = track.popularity > maxpopularity ? track : selectedtrack;
-                    maxpopularity = track.popularity > maxpopularity ? track.popularity : maxpopularity;
-                    console.log("selectedtrack: " + result.tracks.items[0].name);
-                    console.log("Artist: " + result.tracks.items[0].artists[0].name);
-
-                })*/
-                //get selected track artists
-                /*if (selectedtrack !== undefined) {
-                        selectedtrack.artists.forEach(function(artist) {
-                            trackartists = trackartists + artist.name + ", "
-                        })
-                        console.log("Found : " + selectedtrack.name, " by ", trackartists, selectedtrack.popularity)
-                        console.log("selectedtrack.preview_url: "+selectedtrack.preview_url)
-                        //downloadFile(selectedtrack.preview_url);
-                }*/
 
             } else {
-                console.log("no song found from spotify")
-		console.log("StatusCode: "+response.statusCode)
+                console.log("no song found from spotify");
+		console.log("StatusCode: "+response.statusCode);
                // setLEDColor("red", 255)
                 setTimeout(function() {
                    // setLEDColor("white", 255);
@@ -104,9 +78,9 @@ function searchSpotify(rartist, rtrack, rgenre) {
             }
 
         } else {
-            console.log(error + " error" + response.statusCode)
+            console.log(error + " error" + response.statusCode);
         }
-    })
+    });
 }
 
 
@@ -116,7 +90,7 @@ function searchSpotifyTrack(rartist, rtrack, rgenre) {
     rartist = rartist.toLowerCase();
     var searchterm = rartist;
     console.log("searching spotify for " + searchterm + " ....");
-    var searchtype = "artist,track"
+    var searchtype = "artist,track";
     var options = {
         method: 'GET',
         url: "https://api.spotify.com/v1/search",
@@ -126,19 +100,16 @@ function searchSpotifyTrack(rartist, rtrack, rgenre) {
             market: "HU",
             limit: 50
         }
-    }
-    var trackartists = ""
-    //var maxpopularity = 0;
+    };
+
     var selectedtrack, selectedartist, selectedpopular, selectedprev;
     var data = [];
 
     request(options, function(error, response, body) {
-        if (!error && response.statusCode == 200) {
-            var result = JSON.parse(body)
+        if (!error && response.statusCode === 200) {
+            var result = JSON.parse(body);
             
             if (result.tracks.items.length > 0) {
-                //downloadFile(result.tracks.items[0].preview_url) ; // download preview file
-                //selectedtrack = result.tracks.items[0];
                 
                 console.log("For ciklus: " + result.tracks.items.length);
                 for (var i = 0; i < result.tracks.items.length; i++){
@@ -172,29 +143,9 @@ function searchSpotifyTrack(rartist, rtrack, rgenre) {
                 }
                 downloadFile(data[choose].preview);
                 
-                
-                /*
-                result.tracks.items.forEach(function(track) {
-
-                    selectedtrack = track.popularity > maxpopularity ? track : selectedtrack;
-                    maxpopularity = track.popularity > maxpopularity ? track.popularity : maxpopularity;
-                    console.log("selectedtrack: " + result.tracks.items[0].name);
-                    console.log("Artist: " + result.tracks.items[0].artists[0].name);
-
-                })*/
-                //get selected track artists
-                /*if (selectedtrack !== undefined) {
-                        selectedtrack.artists.forEach(function(artist) {
-                            trackartists = trackartists + artist.name + ", "
-                        })
-                        console.log("Found : " + selectedtrack.name, " by ", trackartists, selectedtrack.popularity)
-                        console.log("selectedtrack.preview_url: "+selectedtrack.preview_url)
-                        //downloadFile(selectedtrack.preview_url);
-                }*/
-
             } else {
-                console.log("no song found from spotify")
-		console.log("StatusCode: "+response.statusCode)
+                console.log("no song found from spotify");
+		console.log("StatusCode: "+response.statusCode);
                // setLEDColor("red", 255)
                 setTimeout(function() {
                    // setLEDColor("white", 255);
@@ -202,9 +153,9 @@ function searchSpotifyTrack(rartist, rtrack, rgenre) {
             }
 
         } else {
-            console.log(error + " error" + response.statusCode)
+            console.log(error + " error" + response.statusCode);
         }
-    })
+    });
 }
 
 
@@ -215,12 +166,12 @@ function playsound(soundfile) {
 
     ls.on('close', (code) => {
         console.log('Done with music playback!');
-        isplaying = false
+        isplaying = false;
     });
 }
 
 function downloadFile(url) {
-    var destinationfile = "preview.mp3"
+    var destinationfile = "preview.mp3";
     var file = fs.createWriteStream(destinationfile);
     var donwloadrequest = request.get(url);
 
