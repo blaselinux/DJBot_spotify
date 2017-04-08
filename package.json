@@ -1,0 +1,26 @@
+{
+    "name": "DJBot_spotify",
+    "version": "1.0.0",
+    "description": "Playing song snippets using the Spotify apis ",
+    "keywords": ["spotify", "robot"],
+    "author": "blaselinux",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/blaselinux/spotifyDJBot.git"
+    },
+    "contributors": [],
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/blaselinux/spotifyDJBot/issues"
+    },
+    "homepage": "https://github.com/blaselinux/spotifyDJBot#readme",
+    "dependencies": {
+        "node-aplay": "^1.0.3",
+        "pigpio": "^0.4.0",
+        "request": "^2.81.0",
+        "rpi-ws281x-native": "^0.8.1",
+        "underscore": "^1.8.3",
+        "web-audio-api": "^0.2.2"
+    },
+    "devDependencies": {}
+}
