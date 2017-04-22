@@ -8,7 +8,7 @@
 - Add track to the playlist
 
 
-##Dependencies
+## Dependencies
 
 This app requires mpg321 to play an mp3 file.
 
@@ -18,7 +18,7 @@ This app requires mpg321 to play an mp3 file.
 Following this, you will need to install node Dependencies
     npm install
 
-##Running
+## Running
 
 Start the application.
 
