@@ -9,6 +9,29 @@ var request = require("request");
 var fs = require('fs');
 var exec = require('child_process').exec;
 const spawn = require('child_process').spawn;
+const spotifyList = require('./addToSpotifyPlaylist.js');
+
+
+function chooseTrack(data){
+    canPlay = true;
+    if (data.length === 0){
+        console.log("Cannot find the music");
+        canPlay = false;
+    }
+    var choose = 0;
+    if (canPlay === true){
+        for (var i = 1; i < data.length; i++){
+            if (data[choose].popularity < data[i].popularity){
+                choose =i;
+            }
+        }
+        console.log("=== Playing: " + data[choose].track + " by " + data[choose].artist + ", and popularity is " + data[choose].popularity + " ===");
+        spotifyList.addTrackToPlaylist(data[choose].spotify);
+        downloadFile(data[choose].preview);
+    }
+}
+
+
 
 function searchTrack(rtrack){
     rtrack = rtrack.toLowerCase();
@@ -25,7 +48,7 @@ function searchTrack(rtrack){
             limit: 50
         }
     };
-    var selectedtrack, selectedartist, selectedpopular, selectedprev;
+    var selectedtrack, selectedartist, selectedpopular, selectedprev, selectedSpotify;
     var data = [];
 
     request(options, function(error, response, body) {
@@ -48,21 +71,15 @@ function searchTrack(rtrack){
                             console.log("selectedtrack.preview_url: "+ result.tracks.items[i].preview_url);
                             selectedpopular = result.tracks.items[i].popularity;
                             selectedprev = result.tracks.items[i].preview_url;
-                            data.push({"artist":selectedartist.name,"track":selectedtrack.name,"popularity":selectedpopular,"preview":selectedprev});
+                            selectedSpotify = result.tracks.items[i].uri;
+                            data.push({"artist":selectedartist.name,"track":selectedtrack.name,"popularity":selectedpopular,"preview":selectedprev,"spotify":selectedSpotify});
                             break;
                         }
                     }
                 }
                 console.log("For ciklus vége");
                 console.log(data);
-                var choose = 0;
-                for (var i = 1; i < data.length; i++){
-                    if (data[choose].popularity < data[i].popularity){
-                        choose =i;
-                    }
-                }
-                console.log("=== Playing: " + data[choose].track + ", by " + data[choose].artist + " " + data[choose].popularity + " ===");
-                downloadFile(data[choose].preview);
+                chooseTrack(data);
 
             } else {
                 console.log("no song found from spotify");
@@ -92,7 +109,7 @@ function searchArtist(rartist){
             limit: 50
         }
     };
-    var selectedtrack, selectedartist, selectedpopular, selectedprev;
+    var selectedtrack, selectedartist, selectedpopular, selectedprev, selectedSpotify;
     var data = [];
     
     request(options, function(error, response, body) {
@@ -115,21 +132,15 @@ function searchArtist(rartist){
                             console.log("selectedtrack.preview_url: "+ result.tracks.items[i].preview_url);
                             selectedpopular = result.tracks.items[i].popularity;
                             selectedprev = result.tracks.items[i].preview_url;
-                            data.push({"artist":selectedartist.name,"track":selectedtrack.name,"popularity":selectedpopular,"preview":selectedprev});
+                            selectedSpotify = result.tracks.items[i].uri;
+                            data.push({"artist":selectedartist.name,"track":selectedtrack.name,"popularity":selectedpopular,"preview":selectedprev,"spotify":selectedSpotify});
                             break;
                         }
                     }
                 }
                 console.log("For ciklus vége");
                 console.log(data);
-                var choose = 0;
-                for (var i = 1; i < data.length; i++){
-                    if (data[choose].popularity < data[i].popularity){
-                        choose =i;
-                    }
-                }
-                console.log("=== Playing: " + data[choose].track + ", by " + data[choose].artist + " " + data[choose].popularity + " ===");
-                downloadFile(data[choose].preview);
+                chooseTrack(data);
 
             } else {
                 console.log("no song found from spotify");
@@ -160,7 +171,7 @@ function searchSpotify(rartist, rtrack, rgenre) {
             limit: 50
         }
     };
-    var selectedtrack, selectedartist, selectedpopular, selectedprev;
+    var selectedtrack, selectedartist, selectedpopular, selectedprev, selectedSpotify;
     var data = [];
 
     request(options, function(error, response, body) {
@@ -184,7 +195,8 @@ function searchSpotify(rartist, rtrack, rgenre) {
                                 console.log("selectedtrack.preview_url: "+ result.tracks.items[i].preview_url);
                                 selectedpopular = result.tracks.items[i].popularity;
                                 selectedprev = result.tracks.items[i].preview_url;
-                                data.push({"artist":selectedartist.name,"track":selectedtrack.name,"popularity":selectedpopular,"preview":selectedprev});
+                                selectedSpotify = result.tracks.items[i].uri;
+                                data.push({"artist":selectedartist.name,"track":selectedtrack.name,"popularity":selectedpopular,"preview":selectedprev,"spotify":selectedSpotify});
                                 break;
                             }
                         }
@@ -192,14 +204,7 @@ function searchSpotify(rartist, rtrack, rgenre) {
                 }
                 console.log("For ciklus vége");
                 console.log(data);
-                var choose = 0;
-                for (var i = 1; i < data.length; i++){
-                    if (data[choose].popularity < data[i].popularity){
-                        choose =i;
-                    }
-                }
-                console.log("=== Playing: " + data[choose].track + ", by " + data[choose].artist + " " + data[choose].popularity + " ===");
-                downloadFile(data[choose].preview);
+                chooseTrack(data);
 
             } else {
                 console.log("no song found from spotify");
@@ -231,7 +236,7 @@ function searchSpotifyTrack(rartist, rtrack, rgenre) {
         }
     };
 
-    var selectedtrack, selectedartist, selectedpopular, selectedprev;
+    var selectedtrack, selectedartist, selectedpopular, selectedprev, selectedSpotify;
     var data = [];
 
     request(options, function(error, response, body) {
@@ -268,7 +273,8 @@ function searchSpotifyTrack(rartist, rtrack, rgenre) {
                                 console.log("selectedtrack.preview_url: "+ result.tracks.items[i].preview_url);
                                 selectedpopular = result.tracks.items[i].popularity;
                                 selectedprev = result.tracks.items[i].preview_url;
-                                data.push({"artist":selectedartist.name,"track":selectedtrack.name,"popularity":selectedpopular,"preview":selectedprev});
+                                selectedSpotify = result.tracks.items[i].uri;
+                                data.push({"artist":selectedartist.name,"track":selectedtrack.name,"popularity":selectedpopular,"preview":selectedprev,"spotify":selectedSpotify});
                                 break;
                             }
                         }
@@ -276,21 +282,8 @@ function searchSpotifyTrack(rartist, rtrack, rgenre) {
                 }
                 console.log("For ciklus vége");
                 console.log(data);
-                var choose = 0;
-                if (data.length > 0) {
-                    for (var i = 1; i < data.length; i++){
-                        if (data[choose].popularity < data[i].popularity){
-                            console.log(data[choose].popularity + " < " + data[i].popularity)
-                            choose = i;
-                        }
-                    }
-                    console.log("=== Playing: " + data[choose].track + ", by " + data[choose].artist + " " + data[choose].popularity + " ===");
-                    downloadFile(data[choose].preview);
-                } else {
-                    console.log("no song found from spotify");
-                }
-                
-                
+                chooseTrack(data);
+
             } else {
                 console.log("no song found from spotify");
 		console.log("StatusCode: " + response.statusCode);
@@ -345,6 +338,6 @@ function downloadFile(url) {
 }
 
 //searchSpotify("Tankcsapda", "üdvözöl a pokol", "rock");
-//searchSpotifyTrack("queen", "a kind of magic", "rock");
-//searchArtist("Queen");
-searchTrack("killing in the name");
+//searchSpotifyTrack("pop evil", "trenches", "rock");
+searchArtist("LP");
+//searchTrack("Trenches");
