@@ -10,6 +10,7 @@ var fs = require('fs');
 var exec = require('child_process').exec;
 const spawn = require('child_process').spawn;
 const spotifyList = require('./addToSpotifyPlaylist.js');
+const addDB = require('./top10DB.js');
 
 
 function chooseTrack(data){
@@ -26,8 +27,9 @@ function chooseTrack(data){
             }
         }
         console.log("=== Playing: " + data[choose].track + " by " + data[choose].artist + ", and popularity is " + data[choose].popularity + " ===");
-        spotifyList.addTrackToPlaylist(data[choose].spotify);
-        downloadFile(data[choose].preview);
+        //spotifyList.addTrackToPlaylist(data[choose].spotify);
+        addDB.addToTop10(data[choose]);
+        //downloadFile(data[choose].preview);
     }
 }
 

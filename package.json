@@ -26,7 +26,8 @@
     "underscore": "^1.8.3",
     "web-audio-api": "^0.2.2",
     "request": "~2.34.0",
-    "superagent": "^2.0.0"
+    "superagent": "^2.0.0",
+    "mongodb": "^2.2.26"
   },
   "devDependencies": {
     "blanket": "^1.1.7",
